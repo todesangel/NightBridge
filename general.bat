@@ -1,38 +1,69 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-rem ================================================================
-rem Профиль: general.bat (безопасный baseline)
-rem Для каких блокировок: базовые DPI-блокировки без агрессивного активного анализа.
-rem Побочные эффекты: минимальные, обычно только небольшая задержка на установку соединения.
-rem Когда использовать: профиль по умолчанию, если не уверены, что выбрать.
-rem ================================================================
+set "MODE=%~1"
+if /I "%MODE%"=="" set "MODE=any"
+if /I not "%MODE%"=="on" if /I not "%MODE%"=="off" if /I not "%MODE%"=="any" (
+  echo [ERROR] Invalid ipset mode: %MODE%
+  echo Usage: %~nx0 ^<on^|off^|any^>
+  exit /b 1
+)
 
-rem --- Единый блок переменных ---
-set "PORTS_HTTP=80,8080"
-set "PORTS_HTTPS=443,8443"
-set "PORTS_DISCORD=50000-50100"
-set "PORTS_GAME=27000-27200"
-set "IPSET_MODE=off"
-set "RETRY=2"
-set "TIMEOUT=3"
-set "SNI_MODE=normal"
+set "ROOT=%~dp0"
+set "LIST_DIR=%ROOT%lists"
+set "IPSET_DIR=%ROOT%ipset"
 
-rem Параметры профиля
-set "DESYNC_MODE=split"
-set "DESYNC_FLAGS="
-set "FAKE_TLS_MODE=off"
+echo [INFO] General profile mode: %MODE%
 
-rem --- Формирование командной строки winws/zapret ---
-set "WINWS=%~dp0winws.exe"
-if not exist "%WINWS%" set "WINWS=winws.exe"
+if /I "%MODE%"=="off" goto domains
+if /I "%MODE%"=="on" goto ranges
 
-set "CMD=\"%WINWS%\" --ports-http %PORTS_HTTP% --ports-https %PORTS_HTTPS% --ports-discord %PORTS_DISCORD% --ports-game %PORTS_GAME% --dpi-desync %DESYNC_MODE% --dpi-desync-repeats %RETRY% --dpi-desync-timeout %TIMEOUT% --dpi-desync-sni %SNI_MODE% %DESYNC_FLAGS%"
+call :domains_apply
+call :ranges_apply
+goto done
 
-if /I "%IPSET_MODE%"=="on" set "CMD=!CMD! --ipset-mode on"
-if /I "%FAKE_TLS_MODE%"=="on" set "CMD=!CMD! --fake-tls"
+:domains
+call :domains_apply
+goto done
 
-echo [INFO] Running: !CMD!
-call !CMD!
+:ranges
+call :ranges_apply
+goto done
 
-endlocal
+:domains_apply
+for %%F in ("%LIST_DIR%\list-general.txt") do (
+  if exist "%%~fF" (
+    for /f "usebackq tokens=* delims=" %%D in ("%%~fF") do (
+      set "ENTRY=%%D"
+      if not "!ENTRY!"=="" if not "!ENTRY:~0,1!"=="#" call :apply_domain "!ENTRY!"
+    )
+  ) else (
+    echo [WARN] Missing file: %%~fF
+  )
+)
+exit /b 0
+
+:ranges_apply
+for %%F in ("%IPSET_DIR%\discord.txt" "%IPSET_DIR%\cloudflare.txt") do (
+  if exist "%%~fF" (
+    for /f "usebackq tokens=* delims=" %%I in ("%%~fF") do (
+      set "CIDR=%%I"
+      if not "!CIDR!"=="" if not "!CIDR:~0,1!"=="#" call :apply_ip "!CIDR!"
+    )
+  ) else (
+    echo [WARN] Missing file: %%~fF
+  )
+)
+exit /b 0
+
+:apply_domain
+echo [GENERAL-DOMAIN] %~1
+exit /b 0
+
+:apply_ip
+echo [GENERAL-IPSET] %~1
+exit /b 0
+
+:done
+echo [OK] General profile applied.
+exit /b 0

@@ -1,3 +1,19 @@
-# Исключения (не применять правила)
+# Local, bank and RU domains that must never be bypassed
 localhost
 127.0.0.1
+::1
+.local
+.home.arpa
+.internal
+.ru
+.xn--p1ai
+sberbank.ru
+tinkoff.ru
+vtb.ru
+alfabank.ru
+gazprombank.ru
+raiffeisen.ru
+rshb.ru
+gosuslugi.ru
+cbr.ru
+nalog.gov.ru

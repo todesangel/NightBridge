@@ -1,3 +1,16 @@
-# Общий список доменов/хостов (заготовка)
-example.com
-example.org
+# Discord + Cloudflare domains
+discord.com
+discord.gg
+discord.media
+discordapp.com
+discordapp.net
+cdn.discordapp.com
+media.discordapp.net
+gateway.discord.gg
+cloudflare.com
+cdnjs.cloudflare.com
+cloudflare-dns.com
+workers.dev
+pages.dev
+trycloudflare.com
+cf-ipfs.com

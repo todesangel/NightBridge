@@ -1,4 +1,11 @@
-# Минимальный список для Google-сервисов
+# Google / YouTube domains
 google.com
-youtube.com
+googlevideo.com
 gstatic.com
+ggpht.com
+ytimg.com
+youtube.com
+youtu.be
+yt.be
+youtube-nocookie.com
+withyoutube.com
