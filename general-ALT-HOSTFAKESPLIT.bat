@@ -2,10 +2,10 @@
 setlocal EnableExtensions EnableDelayedExpansion
 
 rem ================================================================
-rem Профиль: general-SIMPLE-FAKE.bat (упрощенный профиль)
-rem Для каких блокировок: типовые SNI/Host-блокировки при умеренно «умном» DPI.
-rem Побочные эффекты: минимальные среди fake-профилей, но обход может быть слабее ALT/TLS вариантов.
-rem Когда использовать: нужен компромисс между стабильностью и шансом обхода.
+rem Профиль: general-ALT-HOSTFAKESPLIT.bat
+rem Для каких блокировок: фильтрация по HTTP Host / TLS SNI и сигнатурам первого пакета.
+rem Побочные эффекты: часть сайтов/сервисов может открываться дольше, редкие нестабильности.
+rem Когда использовать: если блокируются конкретные домены и baseline не срабатывает.
 rem ================================================================
 
 rem --- Единый блок переменных ---
@@ -14,13 +14,13 @@ set "PORTS_HTTPS=443,8443"
 set "PORTS_DISCORD=50000-50100"
 set "PORTS_GAME=27000-27200"
 set "IPSET_MODE=off"
-set "RETRY=2"
-set "TIMEOUT=3"
-set "SNI_MODE=normal"
+set "RETRY=3"
+set "TIMEOUT=4"
+set "SNI_MODE=strict"
 
 rem Параметры профиля
-set "DESYNC_MODE=fake"
-set "DESYNC_FLAGS=--dpi-desync-fooling md5sig"
+set "DESYNC_MODE=hostfakesplit"
+set "DESYNC_FLAGS=--dpi-desync-fooling md5sig --dpi-desync-any-protocol"
 set "FAKE_TLS_MODE=off"
 
 rem --- Формирование командной строки winws/zapret ---
