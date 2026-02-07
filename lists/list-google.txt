@@ -1,0 +1,4 @@
+# Минимальный список для Google-сервисов
+google.com
+youtube.com
+gstatic.com
