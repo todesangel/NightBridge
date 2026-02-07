@@ -1,10 +1,13 @@
 @echo off
 setlocal
 
-REM Альтернативный профиль 4
-REM TODO: скорректируйте параметры под ваш сценарий.
+set "TARGET=%~dp0general-SIMPLE-FAKE.bat"
+if not exist "%TARGET%" (
+  echo [ERROR] Missing profile: general-SIMPLE-FAKE.bat
+  exit /b 1
+)
 
-echo [general-ALT4.bat] Starting alternative profile...
-REM call "%~dp0general.bat"
-
-endlocal
+echo [INFO] Redirecting to general-SIMPLE-FAKE.bat
+call "%TARGET%" %*
+set "RC=%ERRORLEVEL%"
+endlocal & exit /b %RC%
