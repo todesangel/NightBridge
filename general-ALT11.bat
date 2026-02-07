@@ -1,10 +1,13 @@
 @echo off
 setlocal
 
-REM Альтернативный профиль 11
-REM TODO: скорректируйте параметры под ваш сценарий.
+set "TARGET=%~dp0general-FAKE-TLS-HANDSHAKE.bat"
+if not exist "%TARGET%" (
+  echo [ERROR] Missing profile: general-FAKE-TLS-HANDSHAKE.bat
+  exit /b 1
+)
 
-echo [general-ALT11.bat] Starting alternative profile...
-REM call "%~dp0general.bat"
-
-endlocal
+echo [INFO] Redirecting to general-FAKE-TLS-HANDSHAKE.bat
+call "%TARGET%" %*
+set "RC=%ERRORLEVEL%"
+endlocal & exit /b %RC%

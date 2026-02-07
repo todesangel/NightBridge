@@ -1,9 +1,13 @@
 @echo off
 setlocal
 
-REM Профиль с fake TLS (вариант 3)
+set "TARGET=%~dp0general-FAKE-TLS-HANDSHAKE.bat"
+if not exist "%TARGET%" (
+  echo [ERROR] Missing profile: general-FAKE-TLS-HANDSHAKE.bat
+  exit /b 1
+)
 
-echo [general-FAKE-TLS3] Starting fake TLS profile variant 3...
-REM start "" "%~dp0bin\winws.exe" --fake-tls --dpi-desync=multisplit
-
-endlocal
+echo [INFO] Redirecting to general-FAKE-TLS-HANDSHAKE.bat
+call "%TARGET%" %*
+set "RC=%ERRORLEVEL%"
+endlocal & exit /b %RC%

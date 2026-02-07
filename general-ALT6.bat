@@ -1,10 +1,13 @@
 @echo off
 setlocal
 
-REM Альтернативный профиль 6
-REM TODO: скорректируйте параметры под ваш сценарий.
+set "TARGET=%~dp0general-FAKE-TLS-INITIAL.bat"
+if not exist "%TARGET%" (
+  echo [ERROR] Missing profile: general-FAKE-TLS-INITIAL.bat
+  exit /b 1
+)
 
-echo [general-ALT6.bat] Starting alternative profile...
-REM call "%~dp0general.bat"
-
-endlocal
+echo [INFO] Redirecting to general-FAKE-TLS-INITIAL.bat
+call "%TARGET%" %*
+set "RC=%ERRORLEVEL%"
+endlocal & exit /b %RC%
